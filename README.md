@@ -11,8 +11,8 @@
 1. `.env.sample`をコピーして`.env`を作成
 2. `.env`の内容を修正
 3. `docker-compose up -d`
-4. DBに`docs/migration.sql`の内容を反映
-5. `docs/insert_test_user.sql`を参考にユーザーを追加
+4. DBに`app/docs/migration.sql`の内容を反映
+5. `app/docs/insert_test_user.sql`を参考にユーザーを追加
 
 ## 使い方
 
