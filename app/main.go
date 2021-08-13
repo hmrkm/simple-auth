@@ -34,13 +34,13 @@ func main() {
 	e.POST("/v1/auth", func(c echo.Context) error {
 		req := adapter.RequestPostAuth{}
 		if err := c.Bind(&req); err != nil {
-			return c.JSON(400, err)
+			return c.JSON(400, nil)
 		}
 
 		res, err := aa.Verify(req, time.Now(), tokenExpireHour)
 
 		if err != nil {
-			return c.JSON(403, res)
+			return c.JSON(403, nil)
 		}
 
 		return c.JSON(200, res)
