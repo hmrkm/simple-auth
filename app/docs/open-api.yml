@@ -1,0 +1,90 @@
+openapi: 3.1.0
+info:
+  title: simple-auth
+  version: '1.0'
+  contact:
+    name: dummy
+  description: シンプルな認証システム
+servers:
+  - url: 'http://localhost:80'
+paths:
+  /v1/auth:
+    post:
+      summary: 認証
+      operationId: post-v1-auth
+      responses:
+        '200':
+          $ref: '#/components/responses/ResponsePostAuth'
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+      description: ユーザー名、パスワードで認証
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestPostAuth'
+        description: ''
+      tags:
+        - adapter
+  /v1/verify:
+    get:
+      summary: トークン有効性チェック
+      tags:
+        - adapter
+      responses:
+        '200':
+          description: トークン有効性OK
+        '400':
+          description: Bad Request or 無効なトークン
+      operationId: get-v1-verify
+      description: クエリパラメータのtokenが有効なトークンかチェック
+      parameters:
+        - $ref: '#/components/parameters/token'
+    parameters: []
+components:
+  schemas:
+    RequestPostAuth:
+      title: RequestPostAuth
+      type: object
+      description: 認証リクエストボディ
+      properties:
+        email:
+          type: string
+          description: メールアドレス
+        password:
+          type: string
+          description: パスワード
+      required:
+        - email
+        - password
+      x-tags:
+        - adapter
+  responses:
+    ResponsePostAuth:
+      description: 認証成功応答
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: 認証トークン
+              expired_at:
+                type: integer
+                description: 認証トークンの有効期限Unixtimeミリ秒
+            required:
+              - token
+              - expired_at
+  parameters:
+    token:
+      name: token
+      in: query
+      required: true
+      schema:
+        type: string
+      description: トークン
+tags:
+  - name: adapter
