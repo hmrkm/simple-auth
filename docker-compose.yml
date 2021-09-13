@@ -2,6 +2,7 @@ version: "3"
 
 volumes:
     mysql-volume:
+    golang-volume:
 
 services:
     golang:
@@ -10,6 +11,7 @@ services:
             - 80:80
         volumes:
             - ./app:/workspace
+            - golang-volume:/go
         working_dir: /workspace
         env_file:
             - ./.env
