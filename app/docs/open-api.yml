@@ -35,7 +35,7 @@ paths:
         - adapter
       responses:
         '200':
-          description: トークン有効性OK
+          $ref: '#/components/responses/ResponsePostVerify'
         '400':
           description: Bad Request or 無効なトークン
       operationId: get-v1-verify
@@ -61,6 +61,20 @@ components:
         - password
       x-tags:
         - adapter
+    ResponsePostVerifyUser:
+      title: ResponsePostVerifyUser
+      type: object
+      properties:
+        id:
+          type: string
+          description: ユーザーID
+        email:
+          type: string
+          description: メールアドレス
+      required:
+        - id
+        - email
+      description: 認証されたユーザー
   responses:
     ResponsePostAuth:
       description: 認証成功応答
@@ -78,6 +92,17 @@ components:
             required:
               - token
               - expired_at
+    ResponsePostVerify:
+      description: 認証成功のレスポンス
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user:
+                $ref: '#/components/schemas/ResponsePostVerifyUser'
+            required:
+              - user
   parameters:
     token:
       name: token

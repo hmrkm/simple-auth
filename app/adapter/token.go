@@ -10,7 +10,7 @@ import (
 
 //go:generate mockgen -source=$GOFILE -self_package=github.com/hmrkm/simple-auth/$GOPACKAGE -package=$GOPACKAGE -destination=token_mock.go
 type TokenAdapter interface {
-	Verify(GetV1VerifyParams, time.Time) (bool, error)
+	Verify(GetV1VerifyParams, time.Time) (ResponsePostVerify, error)
 }
 
 type tokenAdapter struct {
@@ -23,15 +23,25 @@ func NewTokenAdapter(s usecase.Store) TokenAdapter {
 	}
 }
 
-func (ta tokenAdapter) Verify(p GetV1VerifyParams, now time.Time) (isValid bool, err error) {
+func (ta tokenAdapter) Verify(p GetV1VerifyParams, now time.Time) (res ResponsePostVerify, err error) {
 	t := usecase.Token{}
 	if err := ta.store.First(&t, "token=?", string(p.Token)); err != nil {
-		return false, errors.WithStack(err)
+		return ResponsePostVerify{}, errors.WithStack(err)
 	}
 
 	if !t.IsValid(now) {
-		return false, errors.WithStack(usecase.ErrTokenWasExpired)
+		return ResponsePostVerify{}, errors.WithStack(usecase.ErrTokenWasExpired)
 	}
 
-	return true, nil
+	u := usecase.User{}
+	if err := ta.store.First(&u, "id=?", t.UserId); err != nil {
+		return ResponsePostVerify{}, errors.WithStack(err)
+	}
+
+	return ResponsePostVerify{
+		User: ResponsePostVerifyUser{
+			Id:    u.Id,
+			Email: u.Email,
+		},
+	}, nil
 }

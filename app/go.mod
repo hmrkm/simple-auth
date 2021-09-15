@@ -6,6 +6,8 @@ require (
 	github.com/cosmtrek/air v1.27.3 // indirect
 	github.com/creack/pty v1.1.14 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/deepmap/oapi-codegen v1.8.2 // indirect
+	github.com/go-chi/chi v1.5.1 // indirect
 	github.com/golang/mock v1.6.0
 	github.com/golangci/golangci-lint v1.41.1 // indirect
 	github.com/google/go-cmp v0.5.6

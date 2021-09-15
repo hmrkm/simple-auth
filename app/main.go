@@ -51,14 +51,13 @@ func main() {
 			Token: adapter.Token(c.QueryParam("token")),
 		}
 
-		isValid, err := ta.Verify(req, time.Now())
+		res, err := ta.Verify(req, time.Now())
 
-		if err != nil || !isValid {
+		if err != nil {
 			return c.JSON(400, nil)
 		}
 
-		return c.JSON(200, nil)
-
+		return c.JSON(200, res)
 	})
 
 	e.Logger.Fatal(e.Start(":80"))
