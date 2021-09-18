@@ -35,10 +35,10 @@ func (m *MockTokenAdapter) EXPECT() *MockTokenAdapterMockRecorder {
 }
 
 // Verify mocks base method.
-func (m *MockTokenAdapter) Verify(arg0 GetV1VerifyParams, arg1 time.Time) (bool, error) {
+func (m *MockTokenAdapter) Verify(arg0 RequestVerify, arg1 time.Time) (ResponseVerify, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Verify", arg0, arg1)
-	ret0, _ := ret[0].(bool)
+	ret0, _ := ret[0].(ResponseVerify)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

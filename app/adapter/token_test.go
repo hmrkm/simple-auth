@@ -15,7 +15,7 @@ func TestVerifyToken(t *testing.T) {
 	now := time.Now()
 	testCases := []struct {
 		name        string
-		param       GetV1VerifyParams
+		param       RequestVerify
 		now         time.Time
 		dbToken     string
 		dbUserId    string
@@ -26,7 +26,7 @@ func TestVerifyToken(t *testing.T) {
 	}{
 		{
 			"正常ケース",
-			GetV1VerifyParams{
+			RequestVerify{
 				Token: "token",
 			},
 			now,
@@ -39,7 +39,7 @@ func TestVerifyToken(t *testing.T) {
 		},
 		{
 			"DBに見つからない異常ケース",
-			GetV1VerifyParams{
+			RequestVerify{
 				Token: "token",
 			},
 			now,
@@ -52,7 +52,7 @@ func TestVerifyToken(t *testing.T) {
 		},
 		{
 			"有効期限切れの異常ケース",
-			GetV1VerifyParams{
+			RequestVerify{
 				Token: "token",
 			},
 			now,

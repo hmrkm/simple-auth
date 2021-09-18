@@ -35,10 +35,10 @@ func (m *MockAuthAdapter) EXPECT() *MockAuthAdapterMockRecorder {
 }
 
 // Verify mocks base method.
-func (m *MockAuthAdapter) Verify(arg0 RequestPostAuth, arg1 time.Time, arg2 int) (ResponsePostAuth, error) {
+func (m *MockAuthAdapter) Verify(arg0 RequestAuth, arg1 time.Time, arg2 int) (ResponseAuth, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Verify", arg0, arg1, arg2)
-	ret0, _ := ret[0].(ResponsePostAuth)
+	ret0, _ := ret[0].(ResponseAuth)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

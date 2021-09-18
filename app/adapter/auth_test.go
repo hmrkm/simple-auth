@@ -22,7 +22,7 @@ func TestVerifyAuth(t *testing.T) {
 	createErr := errors.New("create error")
 	testCases := []struct {
 		name            string
-		req             RequestPostAuth
+		req             RequestAuth
 		now             time.Time
 		tokenExpireHour int
 		isValid         bool
@@ -30,12 +30,12 @@ func TestVerifyAuth(t *testing.T) {
 		verifyErr       error
 		token           usecase.Token
 		CreateErr       error
-		expected        ResponsePostAuth
+		expected        ResponseAuth
 		expectedErr     error
 	}{
 		{
 			"正常ケース",
-			RequestPostAuth{
+			RequestAuth{
 				Email:    "aaa@example.com",
 				Password: "passwd",
 			},
@@ -50,7 +50,7 @@ func TestVerifyAuth(t *testing.T) {
 				ExpiredAt: now.Add(1 * time.Hour),
 			},
 			nil,
-			ResponsePostAuth{
+			ResponseAuth{
 				Token:     "token",
 				ExpiredAt: int(now.Add(1*time.Hour).UnixNano() / 1000),
 			},
@@ -58,7 +58,7 @@ func TestVerifyAuth(t *testing.T) {
 		},
 		{
 			"ユーザー認証異常ケース1",
-			RequestPostAuth{
+			RequestAuth{
 				Email:    "aaa@example.com",
 				Password: "passwd",
 			},
@@ -69,12 +69,12 @@ func TestVerifyAuth(t *testing.T) {
 			usecase.ErrInvalidPassword,
 			usecase.Token{},
 			nil,
-			ResponsePostAuth{},
+			ResponseAuth{},
 			usecase.ErrInvalidPassword,
 		},
 		{
 			"ユーザー認証異常ケース2",
-			RequestPostAuth{
+			RequestAuth{
 				Email:    "aaa@example.com",
 				Password: "passwd",
 			},
@@ -85,12 +85,12 @@ func TestVerifyAuth(t *testing.T) {
 			usecase.ErrInvalidVerify,
 			usecase.Token{},
 			nil,
-			ResponsePostAuth{},
+			ResponseAuth{},
 			usecase.ErrInvalidVerify,
 		},
 		{
 			"トークン作成失敗の異常ケース",
-			RequestPostAuth{
+			RequestAuth{
 				Email:    "aaa@example.com",
 				Password: "passwd",
 			},
@@ -104,7 +104,7 @@ func TestVerifyAuth(t *testing.T) {
 			nil,
 			usecase.Token{},
 			createErr,
-			ResponsePostAuth{},
+			ResponseAuth{},
 			createErr,
 		},
 	}

@@ -32,7 +32,7 @@ func main() {
 
 	e := echo.New()
 	e.POST("/v1/auth", func(c echo.Context) error {
-		req := adapter.RequestPostAuth{}
+		req := adapter.RequestAuth{}
 		if err := c.Bind(&req); err != nil {
 			return c.JSON(400, nil)
 		}
@@ -46,9 +46,10 @@ func main() {
 		return c.JSON(200, res)
 	})
 
-	e.GET("/v1/verify", func(c echo.Context) error {
-		req := adapter.GetV1VerifyParams{
-			Token: adapter.Token(c.QueryParam("token")),
+	e.POST("/v1/verify", func(c echo.Context) error {
+		req := adapter.RequestVerify{}
+		if err := c.Bind(&req); err != nil {
+			return c.JSON(400, nil)
 		}
 
 		res, err := ta.Verify(req, time.Now())

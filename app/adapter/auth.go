@@ -10,7 +10,7 @@ import (
 
 //go:generate mockgen -source=$GOFILE -self_package=github.com/hmrkm/simple-auth/$GOPACKAGE -package=$GOPACKAGE -destination=auth_mock.go
 type AuthAdapter interface {
-	Verify(RequestPostAuth, time.Time, int) (ResponsePostAuth, error)
+	Verify(RequestAuth, time.Time, int) (ResponseAuth, error)
 }
 
 type authAdapter struct {
@@ -25,21 +25,21 @@ func NewAuthAdapter(us usecase.UserService, ts usecase.TokenService) AuthAdapter
 	}
 }
 
-func (a authAdapter) Verify(req RequestPostAuth, now time.Time, tokenExpireHour int) (ResponsePostAuth, error) {
+func (a authAdapter) Verify(req RequestAuth, now time.Time, tokenExpireHour int) (ResponseAuth, error) {
 	isValid, user, err := a.userService.Verify(req.Email, req.Password)
 	if err != nil {
-		return ResponsePostAuth{}, err
+		return ResponseAuth{}, err
 	}
 	if !isValid {
-		return ResponsePostAuth{}, errors.WithStack(usecase.ErrInvalidVerify)
+		return ResponseAuth{}, errors.WithStack(usecase.ErrInvalidVerify)
 	}
 
 	token, err := a.tokenService.Create(user, now, tokenExpireHour)
 	if err != nil {
-		return ResponsePostAuth{}, err
+		return ResponseAuth{}, err
 	}
 
-	return ResponsePostAuth{
+	return ResponseAuth{
 		Token:     token.Token,
 		ExpiredAt: token.GetEpochExpiredAt(),
 	}, nil

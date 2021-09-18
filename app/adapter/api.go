@@ -4,7 +4,7 @@
 package adapter
 
 // 認証リクエストボディ
-type RequestPostAuth struct {
+type RequestAuth struct {
 	// メールアドレス
 	Email string `json:"email"`
 
@@ -12,8 +12,14 @@ type RequestPostAuth struct {
 	Password string `json:"password"`
 }
 
+// トークン検証リクエストボディ
+type RequestVerify struct {
+	// トークン
+	Token string `json:"token"`
+}
+
 // 認証されたユーザー
-type ResponsePostVerifyUser struct {
+type VerifyUser struct {
 	// メールアドレス
 	Email string `json:"email"`
 
@@ -21,11 +27,8 @@ type ResponsePostVerifyUser struct {
 	Id string `json:"id"`
 }
 
-// Token defines model for token.
-type Token string
-
-// ResponsePostAuth defines model for ResponsePostAuth.
-type ResponsePostAuth struct {
+// ResponseAuth defines model for ResponseAuth.
+type ResponseAuth struct {
 	// 認証トークンの有効期限Unixtimeミリ秒
 	ExpiredAt int `json:"expired_at"`
 
@@ -33,21 +36,21 @@ type ResponsePostAuth struct {
 	Token string `json:"token"`
 }
 
-// ResponsePostVerify defines model for ResponsePostVerify.
-type ResponsePostVerify struct {
+// ResponseVerify defines model for ResponseVerify.
+type ResponseVerify struct {
 	// 認証されたユーザー
-	User ResponsePostVerifyUser `json:"user"`
+	User VerifyUser `json:"user"`
 }
 
 // PostV1AuthJSONBody defines parameters for PostV1Auth.
-type PostV1AuthJSONBody RequestPostAuth
+type PostV1AuthJSONBody RequestAuth
 
-// GetV1VerifyParams defines parameters for GetV1Verify.
-type GetV1VerifyParams struct {
-	// トークン
-	Token Token `json:"token"`
-}
+// PostV1VerifyJSONBody defines parameters for PostV1Verify.
+type PostV1VerifyJSONBody RequestVerify
 
 // PostV1AuthJSONRequestBody defines body for PostV1Auth for application/json ContentType.
 type PostV1AuthJSONRequestBody PostV1AuthJSONBody
+
+// PostV1VerifyJSONRequestBody defines body for PostV1Verify for application/json ContentType.
+type PostV1VerifyJSONRequestBody PostV1VerifyJSONBody
 

@@ -14,7 +14,7 @@ paths:
       operationId: post-v1-auth
       responses:
         '200':
-          $ref: '#/components/responses/ResponsePostAuth'
+          $ref: '#/components/responses/ResponseAuth'
         '400':
           description: Bad Request
         '401':
@@ -24,29 +24,25 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RequestPostAuth'
+              $ref: '#/components/schemas/RequestAuth'
         description: ''
-      tags:
-        - adapter
   /v1/verify:
-    get:
-      summary: トークン有効性チェック
-      tags:
-        - adapter
+    post:
+      summary: ''
+      operationId: post-v1-verify
       responses:
         '200':
-          $ref: '#/components/responses/ResponsePostVerify'
-        '400':
-          description: Bad Request or 無効なトークン
-      operationId: get-v1-verify
+          $ref: '#/components/responses/ResponseVerify'
       description: クエリパラメータのtokenが有効なトークンかチェック
-      parameters:
-        - $ref: '#/components/parameters/token'
-    parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestVerify'
 components:
   schemas:
-    RequestPostAuth:
-      title: RequestPostAuth
+    RequestAuth:
+      title: RequestAuth
       type: object
       description: 認証リクエストボディ
       properties:
@@ -59,10 +55,18 @@ components:
       required:
         - email
         - password
-      x-tags:
-        - adapter
-    ResponsePostVerifyUser:
-      title: ResponsePostVerifyUser
+    RequestVerify:
+      title: RequestVerify
+      type: object
+      description: トークン検証リクエストボディ
+      properties:
+        token:
+          type: string
+          description: トークン
+      required:
+        - token
+    VerifyUser:
+      title: VerifyUser
       type: object
       properties:
         id:
@@ -76,7 +80,7 @@ components:
         - email
       description: 認証されたユーザー
   responses:
-    ResponsePostAuth:
+    ResponseAuth:
       description: 認証成功応答
       content:
         application/json:
@@ -92,7 +96,7 @@ components:
             required:
               - token
               - expired_at
-    ResponsePostVerify:
+    ResponseVerify:
       description: 認証成功のレスポンス
       content:
         application/json:
@@ -100,16 +104,9 @@ components:
             type: object
             properties:
               user:
-                $ref: '#/components/schemas/ResponsePostVerifyUser'
+                $ref: '#/components/schemas/VerifyUser'
             required:
               - user
-  parameters:
-    token:
-      name: token
-      in: query
-      required: true
-      schema:
-        type: string
-      description: トークン
+  parameters: {}
 tags:
   - name: adapter
