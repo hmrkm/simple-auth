@@ -1,5 +1,7 @@
 # Simple-auth
 
+[![codecov](https://codecov.io/gh/hmrkm/simple-auth/branch/master/graph/badge.svg?token=0UWH8QGLR5)](https://codecov.io/gh/hmrkm/simple-auth)
+
 シンプルな認証の仕組みをGo言語+クリーンアーキテクチャで実装したもの
 
 ## 必要なもの
@@ -20,4 +22,5 @@
 2. `/v1/verify`でトークンの有効性をチェック
 
 ### TOKEN_EXPIRE_HOUR
+
 発効から有効なトークンの期限（時間）
