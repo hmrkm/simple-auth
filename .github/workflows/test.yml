@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         go-version: [1.16.x]
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -21,13 +21,12 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
 
-      - name: go install
-        run: go install
-
       - name: Unit Test
+        working-directory: ./app
         run: go test -race -coverprofile="coverage.txt" -covermode=atomic ./...
 
       - name: upload coverage
         uses: codecov/codecov-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          directory: ./app
