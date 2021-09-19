@@ -67,7 +67,7 @@ func TestGetEpochExpiredAt(t *testing.T) {
 			actual := tc.token.GetEpochExpiredAt()
 
 			if diff := cmp.Diff(tc.expected, actual); diff != "" {
-				t.Errorf("IsValid() is missmatch :%s", diff)
+				t.Errorf("GetEpochExpiredAt() is missmatch :%s", diff)
 			}
 		})
 	}
