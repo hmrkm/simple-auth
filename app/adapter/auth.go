@@ -4,8 +4,6 @@ import (
 	"time"
 
 	"github.com/hmrkm/simple-auth/usecase"
-
-	"github.com/pkg/errors"
 )
 
 //go:generate mockgen -source=$GOFILE -self_package=github.com/hmrkm/simple-auth/$GOPACKAGE -package=$GOPACKAGE -destination=auth_mock.go
@@ -26,12 +24,9 @@ func NewAuthAdapter(us usecase.UserService, ts usecase.TokenService) AuthAdapter
 }
 
 func (a authAdapter) Verify(req RequestAuth, now time.Time, tokenExpireHour int) (ResponseAuth, error) {
-	isValid, user, err := a.userService.Verify(req.Email, req.Password)
+	user, err := a.userService.Verify(req.Email, req.Password)
 	if err != nil {
 		return ResponseAuth{}, err
-	}
-	if !isValid {
-		return ResponseAuth{}, errors.WithStack(usecase.ErrInvalidVerify)
 	}
 
 	token, err := a.tokenService.Create(user, now, tokenExpireHour)

@@ -6,21 +6,21 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
+	"gorm.io/gorm"
 )
 
 func TestVerify(t *testing.T) {
 	hashedPasswd := CreateHash("passwd")
 	testCases := []struct {
-		name            string
-		email           string
-		password        string
-		dbId            string
-		dbEmail         string
-		dbPassword      string
-		dbErr           error
-		expectedIsValid bool
-		expectedUser    User
-		expectedErr     error
+		name         string
+		email        string
+		password     string
+		dbId         string
+		dbEmail      string
+		dbPassword   string
+		dbErr        error
+		expectedUser User
+		expectedErr  error
 	}{
 		{
 			"正常ケース",
@@ -30,7 +30,6 @@ func TestVerify(t *testing.T) {
 			"aaa@example.com",
 			hashedPasswd,
 			nil,
-			true,
 			User{
 				Id:       "a",
 				Email:    "aaa@example.com",
@@ -46,9 +45,19 @@ func TestVerify(t *testing.T) {
 			"",
 			"",
 			ErrNotFound,
-			false,
 			User{},
 			ErrNotFound,
+		},
+		{
+			"DBエラーの異常ケース",
+			"aaa",
+			"passwd",
+			"",
+			"",
+			"",
+			gorm.ErrInvalidDB,
+			User{},
+			gorm.ErrInvalidDB,
 		},
 		{
 			"パスワードが一致しない異常ケース",
@@ -58,7 +67,6 @@ func TestVerify(t *testing.T) {
 			"aaa@example.com",
 			hashedPasswd,
 			nil,
-			false,
 			User{},
 			ErrInvalidPassword,
 		},
@@ -91,11 +99,8 @@ func TestVerify(t *testing.T) {
 			}
 			us := NewUserService(sm)
 
-			actualIsValid, actualUser, actualErr := us.Verify(tc.email, tc.password)
+			actualUser, actualErr := us.Verify(tc.email, tc.password)
 
-			if diff := cmp.Diff(tc.expectedIsValid, actualIsValid); diff != "" {
-				t.Errorf("Verify() isValid is missmatch :%s", diff)
-			}
 			if diff := cmp.Diff(tc.expectedUser, actualUser); diff != "" {
 				t.Errorf("Verify() user is missmatch :%s", diff)
 			}

@@ -115,7 +115,7 @@ func TestVerifyAuth(t *testing.T) {
 			defer ctrl.Finish()
 
 			usm := usecase.NewMockUserService(ctrl)
-			usm.EXPECT().Verify(gomock.Any(), gomock.Any()).Return(tc.isValid, tc.user, tc.verifyErr)
+			usm.EXPECT().Verify(gomock.Any(), gomock.Any()).Return(tc.user, tc.verifyErr)
 			tsm := usecase.NewMockTokenService(ctrl)
 			if tc.verifyErr == nil {
 				tsm.EXPECT().Create(gomock.Any(), gomock.Any(), gomock.Any()).Return(tc.token, tc.CreateErr)

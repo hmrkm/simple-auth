@@ -6,7 +6,7 @@ import (
 
 //go:generate mockgen -source=$GOFILE -self_package=github.com/hmrkm/simple-auth/$GOPACKAGE -package=$GOPACKAGE -destination=user_service_mock.go
 type UserService interface {
-	Verify(string, string) (bool, User, error)
+	Verify(string, string) (User, error)
 }
 
 type userService struct {
@@ -19,18 +19,18 @@ func NewUserService(s Store) UserService {
 	}
 }
 
-func (us userService) Verify(email string, password string) (isValid bool, user User, err error) {
+func (us userService) Verify(email string, password string) (user User, err error) {
 	u := User{}
 	if err := us.store.First(&u, "email=?", email); err != nil {
 		if us.store.IsNotFoundError(err) {
-			return false, User{}, errors.WithStack(ErrNotFound)
+			return User{}, errors.WithStack(ErrNotFound)
 		}
-		return false, User{}, errors.WithStack(err)
+		return User{}, errors.WithStack(err)
 	}
 
 	if u.Password != CreateHash(password) {
-		return false, User{}, errors.WithStack(ErrInvalidPassword)
+		return User{}, errors.WithStack(ErrInvalidPassword)
 	}
 
-	return true, u, nil
+	return u, nil
 }
