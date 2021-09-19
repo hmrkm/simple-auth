@@ -6,13 +6,17 @@ import (
 	"time"
 
 	"github.com/hmrkm/simple-auth/usecase"
+	"gorm.io/gorm"
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
 )
 
 func TestVerifyToken(t *testing.T) {
-	now := time.Now()
+	now := time.Date(2020, 6, 1, 17, 44, 13, 0, time.Local)
+	feature := time.Date(2020, 6, 1, 17, 44, 13, 1, time.Local)
+	past := time.Date(2020, 6, 1, 17, 44, 12, 999, time.Local)
+
 	testCases := []struct {
 		name        string
 		param       RequestVerify
@@ -22,6 +26,7 @@ func TestVerifyToken(t *testing.T) {
 		dbExpiredAt time.Time
 		dbErr       error
 		dbEmail     string
+		dbUserErr   error
 		expected    ResponseVerify
 		expectedErr error
 	}{
@@ -33,9 +38,10 @@ func TestVerifyToken(t *testing.T) {
 			now,
 			"token",
 			"a",
-			now.Add(1 * time.Millisecond),
+			feature,
 			nil,
 			"aaa@example.com",
+			nil,
 			ResponseVerify{
 				User: VerifyUser{
 					Id:    "a",
@@ -55,8 +61,39 @@ func TestVerifyToken(t *testing.T) {
 			now,
 			usecase.ErrNotFound,
 			"aaa@example.com",
+			nil,
 			ResponseVerify{},
 			usecase.ErrNotFound,
+		},
+		{
+			"DBエラー異常ケース",
+			RequestVerify{
+				Token: "token",
+			},
+			now,
+			"",
+			"",
+			now,
+			gorm.ErrInvalidDB,
+			"aaa@example.com",
+			nil,
+			ResponseVerify{},
+			gorm.ErrInvalidDB,
+		},
+		{
+			"DBエラー異常ケース2",
+			RequestVerify{
+				Token: "token",
+			},
+			now,
+			"",
+			"",
+			now,
+			nil,
+			"aaa@example.com",
+			gorm.ErrInvalidDB,
+			ResponseVerify{},
+			gorm.ErrInvalidDB,
 		},
 		{
 			"有効期限切れの異常ケース",
@@ -66,9 +103,10 @@ func TestVerifyToken(t *testing.T) {
 			now,
 			"token",
 			"a",
-			now.Add(-1 * time.Millisecond),
+			past,
 			nil,
 			"aaa@example.com",
+			nil,
 			ResponseVerify{},
 			usecase.ErrTokenWasExpired,
 		},
@@ -99,16 +137,16 @@ func TestVerifyToken(t *testing.T) {
 					},
 				)
 			} else {
-				if tc.dbExpiredAt.After(tc.now) {
+				if !tc.dbExpiredAt.Before(tc.now) {
 					sm.EXPECT().First(gomock.Any(), "id=?", tc.dbUserId).DoAndReturn(
 						func(dest *usecase.User, cond string, param string) error {
-							if tc.dbErr == nil {
+							if tc.dbUserErr == nil {
 								*dest = usecase.User{
 									Id:    tc.dbUserId,
 									Email: tc.dbEmail,
 								}
 							}
-							return tc.dbErr
+							return tc.dbUserErr
 						},
 					)
 				}

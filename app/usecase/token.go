@@ -13,7 +13,7 @@ func (Token) TableName() string {
 }
 
 func (t Token) IsValid(now time.Time) bool {
-	return t.ExpiredAt.After(now)
+	return !t.ExpiredAt.Before(now)
 }
 
 func (t Token) GetEpochExpiredAt() int {
