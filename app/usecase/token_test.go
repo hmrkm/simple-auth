@@ -72,3 +72,12 @@ func TestGetEpochExpiredAt(t *testing.T) {
 		})
 	}
 }
+
+func TestTokenTableName(t *testing.T) {
+	tableName := Token{}.TableName()
+
+	if tableName != "tokens" {
+		t.Errorf("TableName is not tokens")
+
+	}
+}
