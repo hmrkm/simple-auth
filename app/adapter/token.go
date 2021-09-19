@@ -26,6 +26,9 @@ func NewTokenAdapter(s usecase.Store) TokenAdapter {
 func (ta tokenAdapter) Verify(p RequestVerify, now time.Time) (res ResponseVerify, err error) {
 	t := usecase.Token{}
 	if err := ta.store.First(&t, "token=?", string(p.Token)); err != nil {
+		if ta.store.IsNotFoundError(err) {
+			return ResponseVerify{}, errors.WithStack(usecase.ErrNotFound)
+		}
 		return ResponseVerify{}, errors.WithStack(err)
 	}
 

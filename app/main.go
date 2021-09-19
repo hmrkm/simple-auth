@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"os"
 	"strconv"
 	"time"
@@ -39,8 +40,16 @@ func main() {
 
 		res, err := aa.Verify(req, time.Now(), tokenExpireHour)
 
+		if errors.Is(usecase.ErrNotFound, err) {
+			return c.JSON(404, nil)
+		}
+
+		if errors.Is(usecase.ErrInvalidVerify, err) {
+			return c.JSON(401, nil)
+		}
+
 		if err != nil {
-			return c.JSON(403, nil)
+			return c.JSON(500, nil)
 		}
 
 		return c.JSON(200, res)
@@ -54,8 +63,13 @@ func main() {
 
 		res, err := ta.Verify(req, time.Now())
 
+		if errors.Is(err, usecase.ErrNotFound) ||
+			errors.Is(err, usecase.ErrTokenWasExpired) {
+			return c.JSON(404, nil)
+		}
+
 		if err != nil {
-			return c.JSON(400, nil)
+			return c.JSON(500, nil)
 		}
 
 		return c.JSON(200, res)

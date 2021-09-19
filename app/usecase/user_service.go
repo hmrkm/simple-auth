@@ -22,6 +22,9 @@ func NewUserService(s Store) UserService {
 func (us userService) Verify(email string, password string) (isValid bool, user User, err error) {
 	u := User{}
 	if err := us.store.First(&u, "email=?", email); err != nil {
+		if us.store.IsNotFoundError(err) {
+			return false, User{}, errors.WithStack(ErrNotFound)
+		}
 		return false, User{}, errors.WithStack(err)
 	}
 

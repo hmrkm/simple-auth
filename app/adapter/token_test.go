@@ -21,7 +21,8 @@ func TestVerifyToken(t *testing.T) {
 		dbUserId    string
 		dbExpiredAt time.Time
 		dbErr       error
-		expected    bool
+		dbEmail     string
+		expected    ResponseVerify
 		expectedErr error
 	}{
 		{
@@ -34,7 +35,13 @@ func TestVerifyToken(t *testing.T) {
 			"a",
 			now.Add(1 * time.Millisecond),
 			nil,
-			true,
+			"aaa@example.com",
+			ResponseVerify{
+				User: VerifyUser{
+					Id:    "a",
+					Email: "aaa@example.com",
+				},
+			},
 			nil,
 		},
 		{
@@ -47,7 +54,8 @@ func TestVerifyToken(t *testing.T) {
 			"",
 			now,
 			usecase.ErrNotFound,
-			false,
+			"aaa@example.com",
+			ResponseVerify{},
 			usecase.ErrNotFound,
 		},
 		{
@@ -60,7 +68,8 @@ func TestVerifyToken(t *testing.T) {
 			"a",
 			now.Add(-1 * time.Millisecond),
 			nil,
-			false,
+			"aaa@example.com",
+			ResponseVerify{},
 			usecase.ErrTokenWasExpired,
 		},
 	}
@@ -71,7 +80,7 @@ func TestVerifyToken(t *testing.T) {
 			defer ctrl.Finish()
 
 			sm := usecase.NewMockStore(ctrl)
-			sm.EXPECT().First(gomock.Any(), gomock.Any(), gomock.Any()).DoAndReturn(
+			sm.EXPECT().First(gomock.Any(), "token=?", tc.param.Token).DoAndReturn(
 				func(dest *usecase.Token, cond string, param string) error {
 					if tc.dbErr == nil {
 						*dest = usecase.Token{
@@ -83,12 +92,34 @@ func TestVerifyToken(t *testing.T) {
 					return tc.dbErr
 				},
 			)
+			if tc.dbErr != nil {
+				sm.EXPECT().IsNotFoundError(tc.dbErr).DoAndReturn(
+					func(err error) bool {
+						return errors.Is(usecase.ErrNotFound, err)
+					},
+				)
+			} else {
+				if tc.dbExpiredAt.After(tc.now) {
+					sm.EXPECT().First(gomock.Any(), "id=?", tc.dbUserId).DoAndReturn(
+						func(dest *usecase.User, cond string, param string) error {
+							if tc.dbErr == nil {
+								*dest = usecase.User{
+									Id:    tc.dbUserId,
+									Email: tc.dbEmail,
+								}
+							}
+							return tc.dbErr
+						},
+					)
+				}
+			}
+
 			ta := NewTokenAdapter(sm)
 
 			actual, actualErr := ta.Verify(tc.param, tc.now)
 
 			if diff := cmp.Diff(tc.expected, actual); diff != "" {
-				t.Errorf("Verify() isValid is missmatch :%s", diff)
+				t.Errorf("Verify() ResponseVerify is missmatch :%s", diff)
 			}
 			if !errors.Is(actualErr, tc.expectedErr) {
 				t.Errorf("Verify() actualErr: %v, ecpectedErr: %v", actualErr, tc.expectedErr)

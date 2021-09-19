@@ -5,4 +5,5 @@ type Store interface {
 	Find(interface{}, string, ...interface{}) error
 	First(interface{}, string, ...interface{}) error
 	Create(interface{}) error
+	IsNotFoundError(error) bool
 }
