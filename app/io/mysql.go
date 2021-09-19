@@ -6,37 +6,26 @@ import (
 
 	"github.com/hmrkm/simple-auth/usecase"
 
-	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 type Mysql struct {
-	Conn *gorm.DB
+	Conn GormConn
 }
 
-func OpenMysql(user string, password string, database string) (Mysql, error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(mysql:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, database)
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})
-	if err != nil {
-		return Mysql{}, err
-	}
-
-	return Mysql{
-		Conn: db,
-	}, nil
+func CreateDSN(user string, password string, database string) string {
+	return fmt.Sprintf("%s:%s@tcp(mysql:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, database)
 }
 
-// deferで呼び出すため戻り値なし
-func (m Mysql) Close() {
+func (m Mysql) Close() error {
 	db, err := m.Conn.DB()
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	db.Close()
+
+	return nil
 }
 
 func (m Mysql) Find(dest interface{}, conds string, params ...interface{}) error {

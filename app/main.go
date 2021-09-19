@@ -9,6 +9,9 @@ import (
 	"github.com/hmrkm/simple-auth/adapter"
 	"github.com/hmrkm/simple-auth/io"
 	"github.com/hmrkm/simple-auth/usecase"
+	mysqlDriver "gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"github.com/labstack/echo/v4"
 )
@@ -23,9 +26,15 @@ func main() {
 		panic(err)
 	}
 
-	mysql, err := io.OpenMysql(mysqlUser, mysqlPassword, mysqlDatabase)
+	db, err := gorm.Open(mysqlDriver.Open(io.CreateDSN(mysqlUser, mysqlPassword, mysqlDatabase)), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		panic(err)
+	}
+
+	mysql := io.Mysql{
+		Conn: db,
 	}
 	defer mysql.Close()
 
