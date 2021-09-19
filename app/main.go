@@ -23,7 +23,10 @@ func main() {
 		panic(err)
 	}
 
-	mysql := io.OpenMysql(mysqlUser, mysqlPassword, mysqlDatabase)
+	mysql, err := io.OpenMysql(mysqlUser, mysqlPassword, mysqlDatabase)
+	if err != nil {
+		panic(err)
+	}
 	defer mysql.Close()
 
 	usu := usecase.NewUserService(mysql)
