@@ -34,17 +34,17 @@ func (m *MockStore) EXPECT() *MockStoreMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockStore) Create(target interface{}) error {
+func (m *MockStore) Create(value interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", target)
+	ret := m.ctrl.Call(m, "Create", value)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockStoreMockRecorder) Create(target interface{}) *gomock.Call {
+func (mr *MockStoreMockRecorder) Create(value interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockStore)(nil).Create), target)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockStore)(nil).Create), value)
 }
 
 // Find mocks base method.

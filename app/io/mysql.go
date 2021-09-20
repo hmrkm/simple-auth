@@ -28,12 +28,12 @@ func (m Mysql) Close() error {
 	return nil
 }
 
-func (m Mysql) Find(dest interface{}, conds string, params ...interface{}) error {
-	return m.Conn.Find(dest, conds, params).Error
+func (m Mysql) Find(destAddr interface{}, cond string, params ...interface{}) error {
+	return m.Conn.Find(destAddr, cond, params).Error
 }
 
-func (m Mysql) First(dest interface{}, conds string, params ...interface{}) error {
-	err := m.Conn.First(dest, conds, params).Error
+func (m Mysql) First(destAddr interface{}, cond string, params ...interface{}) error {
+	err := m.Conn.First(destAddr, cond, params).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return domain.ErrNotFound
 	}
@@ -41,8 +41,8 @@ func (m Mysql) First(dest interface{}, conds string, params ...interface{}) erro
 	return err
 }
 
-func (m Mysql) Create(target interface{}) error {
-	return m.Conn.Create(target).Error
+func (m Mysql) Create(value interface{}) error {
+	return m.Conn.Create(value).Error
 }
 
 func (m Mysql) IsNotFoundError(err error) bool {

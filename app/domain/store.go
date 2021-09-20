@@ -4,6 +4,6 @@ package domain
 type Store interface {
 	Find(destAddr interface{}, cond string, params ...interface{}) error
 	First(destAddr interface{}, cond string, params ...interface{}) error
-	Create(target interface{}) error
+	Create(value interface{}) error
 	IsNotFoundError(error) bool
 }
