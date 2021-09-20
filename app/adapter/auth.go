@@ -12,9 +12,9 @@ type Auth interface {
 }
 
 type auth struct {
-	AuthUsecase     usecase.Auth
-	TokenUsecase    usecase.Token
-	TokenExpireHour int
+	authUsecase     usecase.Auth
+	tokenUsecase    usecase.Token
+	tokenExpireHour int
 }
 
 func NewAuth(
@@ -23,14 +23,14 @@ func NewAuth(
 	teh int,
 ) Auth {
 	return auth{
-		AuthUsecase:     au,
-		TokenUsecase:    tu,
-		TokenExpireHour: teh,
+		authUsecase:     au,
+		tokenUsecase:    tu,
+		tokenExpireHour: teh,
 	}
 }
 
 func (aa auth) Auth(req RequestAuth) (ResponseAuth, error) {
-	t, err := aa.AuthUsecase.Verify(req.Email, req.Password, time.Now(), aa.TokenExpireHour)
+	t, err := aa.authUsecase.Verify(req.Email, req.Password, time.Now(), aa.tokenExpireHour)
 	if err != nil {
 		return ResponseAuth{}, err
 	}
@@ -42,7 +42,7 @@ func (aa auth) Auth(req RequestAuth) (ResponseAuth, error) {
 }
 
 func (aa auth) Verify(req RequestVerify) (ResponseVerify, error) {
-	u, err := aa.TokenUsecase.Verify(req.Token, time.Now())
+	u, err := aa.tokenUsecase.Verify(req.Token, time.Now())
 	if err != nil {
 		return ResponseVerify{}, err
 	}

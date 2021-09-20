@@ -19,7 +19,7 @@ func NewMysqlMock() (Mysql, sqlmock.Sqlmock) {
 				Conn: db,
 			}), &gorm.Config{})
 	mysql := Mysql{
-		Conn: gormDB,
+		conn: gormDB,
 	}
 	return mysql, sqlMock
 }

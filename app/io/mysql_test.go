@@ -73,7 +73,7 @@ func TestClose(t *testing.T) {
 
 				mdbc := NewMockDBConn(ctrl)
 				mdbc.EXPECT().DB().Return(&sql.DB{}, tc.err)
-				mysql.Conn = mdbc
+				mysql.conn = mdbc
 			}
 
 			actual := mysql.Close()

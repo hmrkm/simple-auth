@@ -32,9 +32,7 @@ func main() {
 		panic(err)
 	}
 
-	mysql := io.Mysql{
-		Conn: db,
-	}
+	mysql := io.NewMysql(db)
 	defer mysql.Close()
 
 	usd := domain.NewUserService(mysql)
@@ -44,7 +42,8 @@ func main() {
 	aa := adapter.NewAuth(au, tu, tokenExpireHour)
 
 	e := echo.New()
-	e.POST("/v1/auth", func(c echo.Context) error {
+	g := e.Group("/v1")
+	g.POST("/auth", func(c echo.Context) error {
 		req := adapter.RequestAuth{}
 		if err := c.Bind(&req); err != nil {
 			return c.JSON(400, nil)
@@ -59,7 +58,7 @@ func main() {
 		return c.JSON(200, res)
 	})
 
-	e.POST("/v1/verify", func(c echo.Context) error {
+	g.POST("/verify", func(c echo.Context) error {
 		req := adapter.RequestVerify{}
 		if err := c.Bind(&req); err != nil {
 			return c.JSON(400, nil)

@@ -10,7 +10,13 @@ import (
 )
 
 type Mysql struct {
-	Conn GormConn
+	conn GormConn
+}
+
+func NewMysql(conn GormConn) Mysql {
+	return Mysql{
+		conn: conn,
+	}
 }
 
 func CreateDSN(user string, password string, database string) (dsn string) {
@@ -18,7 +24,7 @@ func CreateDSN(user string, password string, database string) (dsn string) {
 }
 
 func (m Mysql) Close() error {
-	db, err := m.Conn.DB()
+	db, err := m.conn.DB()
 	if err != nil {
 		return err
 	}
@@ -29,11 +35,11 @@ func (m Mysql) Close() error {
 }
 
 func (m Mysql) Find(destAddr interface{}, cond string, params ...interface{}) error {
-	return m.Conn.Find(destAddr, cond, params).Error
+	return m.conn.Find(destAddr, cond, params).Error
 }
 
 func (m Mysql) First(destAddr interface{}, cond string, params ...interface{}) error {
-	err := m.Conn.First(destAddr, cond, params).Error
+	err := m.conn.First(destAddr, cond, params).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return domain.ErrNotFound
 	}
@@ -42,7 +48,7 @@ func (m Mysql) First(destAddr interface{}, cond string, params ...interface{}) e
 }
 
 func (m Mysql) Create(value interface{}) error {
-	return m.Conn.Create(value).Error
+	return m.conn.Create(value).Error
 }
 
 func (m Mysql) IsNotFoundError(err error) bool {
