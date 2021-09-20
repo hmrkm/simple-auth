@@ -140,7 +140,7 @@ func TestVerifyToken(t *testing.T) {
 				}
 			}
 
-			ta := NewTokenUsecase(sm)
+			ta := NewToken(sm)
 
 			actual, actualErr := ta.Verify(tc.token, tc.now)
 

@@ -34,16 +34,16 @@ func (m *MockUserService) EXPECT() *MockUserServiceMockRecorder {
 }
 
 // Verify mocks base method.
-func (m *MockUserService) Verify(arg0, arg1 string) (User, error) {
+func (m *MockUserService) Verify(email, password string) (User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Verify", arg0, arg1)
+	ret := m.ctrl.Call(m, "Verify", email, password)
 	ret0, _ := ret[0].(User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Verify indicates an expected call of Verify.
-func (mr *MockUserServiceMockRecorder) Verify(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockUserServiceMockRecorder) Verify(email, password interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Verify", reflect.TypeOf((*MockUserService)(nil).Verify), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Verify", reflect.TypeOf((*MockUserService)(nil).Verify), email, password)
 }

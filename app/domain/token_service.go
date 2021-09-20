@@ -8,7 +8,7 @@ import (
 
 //go:generate mockgen -source=$GOFILE -self_package=github.com/hmrkm/simple-auth/$GOPACKAGE -package=$GOPACKAGE -destination=token_service_mock.go
 type TokenService interface {
-	Create(User, time.Time, int) (Token, error)
+	Create(u User, now time.Time, expireHour int) (Token, error)
 }
 
 type tokenService struct {

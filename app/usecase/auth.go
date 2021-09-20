@@ -7,23 +7,23 @@ import (
 )
 
 //go:generate mockgen -source=$GOFILE -self_package=github.com/hmrkm/simple-auth/$GOPACKAGE -package=$GOPACKAGE -destination=auth_mock.go
-type AuthUsecase interface {
+type Auth interface {
 	Verify(email string, password string, now time.Time, tokenExpireHour int) (domain.Token, error)
 }
 
-type authUsecase struct {
+type auth struct {
 	userService  domain.UserService
 	tokenService domain.TokenService
 }
 
-func NewAuthUsecase(us domain.UserService, ts domain.TokenService) AuthUsecase {
-	return authUsecase{
+func NewAuth(us domain.UserService, ts domain.TokenService) Auth {
+	return auth{
 		userService:  us,
 		tokenService: ts,
 	}
 }
 
-func (a authUsecase) Verify(email string, password string, now time.Time, tokenExpireHour int) (domain.Token, error) {
+func (a auth) Verify(email string, password string, now time.Time, tokenExpireHour int) (domain.Token, error) {
 	user, err := a.userService.Verify(email, password)
 	if err != nil {
 		return domain.Token{}, err

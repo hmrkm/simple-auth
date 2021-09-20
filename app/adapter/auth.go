@@ -6,30 +6,30 @@ import (
 	"github.com/hmrkm/simple-auth/usecase"
 )
 
-type AuthAdapter interface {
+type Auth interface {
 	Auth(RequestAuth) (ResponseAuth, error)
 	Verify(RequestVerify) (ResponseVerify, error)
 }
 
-type authAdapter struct {
-	AuthUsecase     usecase.AuthUsecase
-	TokenUsecase    usecase.TokenUsecase
+type auth struct {
+	AuthUsecase     usecase.Auth
+	TokenUsecase    usecase.Token
 	TokenExpireHour int
 }
 
-func NewAuthAdapter(
-	au usecase.AuthUsecase,
-	tu usecase.TokenUsecase,
+func NewAuth(
+	au usecase.Auth,
+	tu usecase.Token,
 	teh int,
-) AuthAdapter {
-	return authAdapter{
+) Auth {
+	return auth{
 		AuthUsecase:     au,
 		TokenUsecase:    tu,
 		TokenExpireHour: teh,
 	}
 }
 
-func (aa authAdapter) Auth(req RequestAuth) (ResponseAuth, error) {
+func (aa auth) Auth(req RequestAuth) (ResponseAuth, error) {
 	t, err := aa.AuthUsecase.Verify(req.Email, req.Password, time.Now(), aa.TokenExpireHour)
 	if err != nil {
 		return ResponseAuth{}, err
@@ -41,7 +41,7 @@ func (aa authAdapter) Auth(req RequestAuth) (ResponseAuth, error) {
 	}, nil
 }
 
-func (aa authAdapter) Verify(req RequestVerify) (ResponseVerify, error) {
+func (aa auth) Verify(req RequestVerify) (ResponseVerify, error) {
 	u, err := aa.TokenUsecase.Verify(req.Token, time.Now())
 	if err != nil {
 		return ResponseVerify{}, err

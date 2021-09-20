@@ -9,21 +9,21 @@ import (
 )
 
 //go:generate mockgen -source=$GOFILE -self_package=github.com/hmrkm/simple-auth/$GOPACKAGE -package=$GOPACKAGE -destination=token_mock.go
-type TokenUsecase interface {
+type Token interface {
 	Verify(token string, now time.Time) (domain.User, error)
 }
 
-type tokenUsecase struct {
+type token struct {
 	store domain.Store
 }
 
-func NewTokenUsecase(s domain.Store) TokenUsecase {
-	return tokenUsecase{
+func NewToken(s domain.Store) Token {
+	return token{
 		store: s,
 	}
 }
 
-func (ta tokenUsecase) Verify(token string, now time.Time) (domain.User, error) {
+func (ta token) Verify(token string, now time.Time) (domain.User, error) {
 	t := domain.Token{}
 	if err := ta.store.First(&t, "token=?", token); err != nil {
 		if ta.store.IsNotFoundError(err) {

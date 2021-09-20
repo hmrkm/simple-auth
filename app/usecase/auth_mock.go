@@ -12,31 +12,31 @@ import (
 	domain "github.com/hmrkm/simple-auth/domain"
 )
 
-// MockAuthUsecase is a mock of AuthUsecase interface.
-type MockAuthUsecase struct {
+// MockAuth is a mock of Auth interface.
+type MockAuth struct {
 	ctrl     *gomock.Controller
-	recorder *MockAuthUsecaseMockRecorder
+	recorder *MockAuthMockRecorder
 }
 
-// MockAuthUsecaseMockRecorder is the mock recorder for MockAuthUsecase.
-type MockAuthUsecaseMockRecorder struct {
-	mock *MockAuthUsecase
+// MockAuthMockRecorder is the mock recorder for MockAuth.
+type MockAuthMockRecorder struct {
+	mock *MockAuth
 }
 
-// NewMockAuthUsecase creates a new mock instance.
-func NewMockAuthUsecase(ctrl *gomock.Controller) *MockAuthUsecase {
-	mock := &MockAuthUsecase{ctrl: ctrl}
-	mock.recorder = &MockAuthUsecaseMockRecorder{mock}
+// NewMockAuth creates a new mock instance.
+func NewMockAuth(ctrl *gomock.Controller) *MockAuth {
+	mock := &MockAuth{ctrl: ctrl}
+	mock.recorder = &MockAuthMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockAuthUsecase) EXPECT() *MockAuthUsecaseMockRecorder {
+func (m *MockAuth) EXPECT() *MockAuthMockRecorder {
 	return m.recorder
 }
 
 // Verify mocks base method.
-func (m *MockAuthUsecase) Verify(email, password string, now time.Time, tokenExpireHour int) (domain.Token, error) {
+func (m *MockAuth) Verify(email, password string, now time.Time, tokenExpireHour int) (domain.Token, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Verify", email, password, now, tokenExpireHour)
 	ret0, _ := ret[0].(domain.Token)
@@ -45,7 +45,7 @@ func (m *MockAuthUsecase) Verify(email, password string, now time.Time, tokenExp
 }
 
 // Verify indicates an expected call of Verify.
-func (mr *MockAuthUsecaseMockRecorder) Verify(email, password, now, tokenExpireHour interface{}) *gomock.Call {
+func (mr *MockAuthMockRecorder) Verify(email, password, now, tokenExpireHour interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Verify", reflect.TypeOf((*MockAuthUsecase)(nil).Verify), email, password, now, tokenExpireHour)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Verify", reflect.TypeOf((*MockAuth)(nil).Verify), email, password, now, tokenExpireHour)
 }

@@ -35,16 +35,16 @@ func (m *MockTokenService) EXPECT() *MockTokenServiceMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockTokenService) Create(arg0 User, arg1 time.Time, arg2 int) (Token, error) {
+func (m *MockTokenService) Create(u User, now time.Time, expireHour int) (Token, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0, arg1, arg2)
+	ret := m.ctrl.Call(m, "Create", u, now, expireHour)
 	ret0, _ := ret[0].(Token)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockTokenServiceMockRecorder) Create(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockTokenServiceMockRecorder) Create(u, now, expireHour interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockTokenService)(nil).Create), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockTokenService)(nil).Create), u, now, expireHour)
 }

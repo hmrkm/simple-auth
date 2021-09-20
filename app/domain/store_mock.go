@@ -34,24 +34,24 @@ func (m *MockStore) EXPECT() *MockStoreMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockStore) Create(arg0 interface{}) error {
+func (m *MockStore) Create(target interface{}) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0)
+	ret := m.ctrl.Call(m, "Create", target)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockStoreMockRecorder) Create(arg0 interface{}) *gomock.Call {
+func (mr *MockStoreMockRecorder) Create(target interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockStore)(nil).Create), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockStore)(nil).Create), target)
 }
 
 // Find mocks base method.
-func (m *MockStore) Find(arg0 interface{}, arg1 string, arg2 ...interface{}) error {
+func (m *MockStore) Find(destAddr interface{}, cond string, params ...interface{}) error {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{arg0, arg1}
-	for _, a := range arg2 {
+	varargs := []interface{}{destAddr, cond}
+	for _, a := range params {
 		varargs = append(varargs, a)
 	}
 	ret := m.ctrl.Call(m, "Find", varargs...)
@@ -60,17 +60,17 @@ func (m *MockStore) Find(arg0 interface{}, arg1 string, arg2 ...interface{}) err
 }
 
 // Find indicates an expected call of Find.
-func (mr *MockStoreMockRecorder) Find(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+func (mr *MockStoreMockRecorder) Find(destAddr, cond interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	varargs := append([]interface{}{destAddr, cond}, params...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockStore)(nil).Find), varargs...)
 }
 
 // First mocks base method.
-func (m *MockStore) First(arg0 interface{}, arg1 string, arg2 ...interface{}) error {
+func (m *MockStore) First(destAddr interface{}, cond string, params ...interface{}) error {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{arg0, arg1}
-	for _, a := range arg2 {
+	varargs := []interface{}{destAddr, cond}
+	for _, a := range params {
 		varargs = append(varargs, a)
 	}
 	ret := m.ctrl.Call(m, "First", varargs...)
@@ -79,9 +79,9 @@ func (m *MockStore) First(arg0 interface{}, arg1 string, arg2 ...interface{}) er
 }
 
 // First indicates an expected call of First.
-func (mr *MockStoreMockRecorder) First(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+func (mr *MockStoreMockRecorder) First(destAddr, cond interface{}, params ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	varargs := append([]interface{}{destAddr, cond}, params...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "First", reflect.TypeOf((*MockStore)(nil).First), varargs...)
 }
 

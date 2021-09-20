@@ -12,31 +12,31 @@ import (
 	domain "github.com/hmrkm/simple-auth/domain"
 )
 
-// MockTokenUsecase is a mock of TokenUsecase interface.
-type MockTokenUsecase struct {
+// MockToken is a mock of Token interface.
+type MockToken struct {
 	ctrl     *gomock.Controller
-	recorder *MockTokenUsecaseMockRecorder
+	recorder *MockTokenMockRecorder
 }
 
-// MockTokenUsecaseMockRecorder is the mock recorder for MockTokenUsecase.
-type MockTokenUsecaseMockRecorder struct {
-	mock *MockTokenUsecase
+// MockTokenMockRecorder is the mock recorder for MockToken.
+type MockTokenMockRecorder struct {
+	mock *MockToken
 }
 
-// NewMockTokenUsecase creates a new mock instance.
-func NewMockTokenUsecase(ctrl *gomock.Controller) *MockTokenUsecase {
-	mock := &MockTokenUsecase{ctrl: ctrl}
-	mock.recorder = &MockTokenUsecaseMockRecorder{mock}
+// NewMockToken creates a new mock instance.
+func NewMockToken(ctrl *gomock.Controller) *MockToken {
+	mock := &MockToken{ctrl: ctrl}
+	mock.recorder = &MockTokenMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockTokenUsecase) EXPECT() *MockTokenUsecaseMockRecorder {
+func (m *MockToken) EXPECT() *MockTokenMockRecorder {
 	return m.recorder
 }
 
 // Verify mocks base method.
-func (m *MockTokenUsecase) Verify(token string, now time.Time) (domain.User, error) {
+func (m *MockToken) Verify(token string, now time.Time) (domain.User, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Verify", token, now)
 	ret0, _ := ret[0].(domain.User)
@@ -45,7 +45,7 @@ func (m *MockTokenUsecase) Verify(token string, now time.Time) (domain.User, err
 }
 
 // Verify indicates an expected call of Verify.
-func (mr *MockTokenUsecaseMockRecorder) Verify(token, now interface{}) *gomock.Call {
+func (mr *MockTokenMockRecorder) Verify(token, now interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Verify", reflect.TypeOf((*MockTokenUsecase)(nil).Verify), token, now)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Verify", reflect.TypeOf((*MockToken)(nil).Verify), token, now)
 }

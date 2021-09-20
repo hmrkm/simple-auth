@@ -13,7 +13,7 @@ type Mysql struct {
 	Conn GormConn
 }
 
-func CreateDSN(user string, password string, database string) string {
+func CreateDSN(user string, password string, database string) (dsn string) {
 	return fmt.Sprintf("%s:%s@tcp(mysql:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, database)
 }
 

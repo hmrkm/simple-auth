@@ -115,7 +115,7 @@ func TestVerifyAuth(t *testing.T) {
 				tsm.EXPECT().Create(gomock.Any(), gomock.Any(), gomock.Any()).Return(tc.token, tc.CreateErr)
 			}
 
-			ta := NewAuthUsecase(usm, tsm)
+			ta := NewAuth(usm, tsm)
 
 			actual, actualErr := ta.Verify(tc.email, tc.password, tc.now, tc.tokenExpireHour)
 

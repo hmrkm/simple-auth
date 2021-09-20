@@ -39,10 +39,9 @@ func main() {
 
 	usd := domain.NewUserService(mysql)
 	tsd := domain.NewTokenService(mysql)
-	// TODO: Usecaseのサフィックス不要？
-	au := usecase.NewAuthUsecase(usd, tsd)
-	tu := usecase.NewTokenUsecase(mysql)
-	aa := adapter.NewAuthAdapter(au, tu, tokenExpireHour)
+	au := usecase.NewAuth(usd, tsd)
+	tu := usecase.NewToken(mysql)
+	aa := adapter.NewAuth(au, tu, tokenExpireHour)
 
 	e := echo.New()
 	e.POST("/v1/auth", func(c echo.Context) error {
