@@ -1,12 +1,11 @@
 package main
 
 import (
-	"errors"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/hmrkm/simple-auth/adapter"
+	"github.com/hmrkm/simple-auth/domain"
 	"github.com/hmrkm/simple-auth/io"
 	"github.com/hmrkm/simple-auth/usecase"
 	mysqlDriver "gorm.io/driver/mysql"
@@ -38,10 +37,12 @@ func main() {
 	}
 	defer mysql.Close()
 
-	usu := usecase.NewUserService(mysql)
-	tsu := usecase.NewTokenService(mysql)
-	aa := adapter.NewAuthAdapter(usu, tsu)
-	ta := adapter.NewTokenAdapter(mysql)
+	usd := domain.NewUserService(mysql)
+	tsd := domain.NewTokenService(mysql)
+	// TODO: Usecaseのサフィックス不要？
+	au := usecase.NewAuthUsecase(usd, tsd)
+	tu := usecase.NewTokenUsecase(mysql)
+	aa := adapter.NewAuthAdapter(au, tu, tokenExpireHour)
 
 	e := echo.New()
 	e.POST("/v1/auth", func(c echo.Context) error {
@@ -50,18 +51,10 @@ func main() {
 			return c.JSON(400, nil)
 		}
 
-		res, err := aa.Verify(req, time.Now(), tokenExpireHour)
+		res, err := aa.Auth(req)
 
-		if errors.Is(usecase.ErrNotFound, err) {
-			return c.JSON(404, nil)
-		}
-
-		if errors.Is(usecase.ErrInvalidVerify, err) {
-			return c.JSON(401, nil)
-		}
-
-		if err != nil {
-			return c.JSON(500, nil)
+		if jsn := ErrorHandler(c, err); jsn != nil {
+			return jsn
 		}
 
 		return c.JSON(200, res)
@@ -73,15 +66,10 @@ func main() {
 			return c.JSON(400, nil)
 		}
 
-		res, err := ta.Verify(req, time.Now())
+		res, err := aa.Verify(req)
 
-		if errors.Is(err, usecase.ErrNotFound) ||
-			errors.Is(err, usecase.ErrTokenWasExpired) {
-			return c.JSON(404, nil)
-		}
-
-		if err != nil {
-			return c.JSON(500, nil)
+		if jsn := ErrorHandler(c, err); jsn != nil {
+			return jsn
 		}
 
 		return c.JSON(200, res)

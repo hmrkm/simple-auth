@@ -1,21 +1,45 @@
 package usecase
 
-import "time"
+import (
+	"time"
 
-type Token struct {
-	Token     string    `json:"token" gorm:"column:token"`
-	UserId    string    `json:"-" gorm:"column:user_id"`
-	ExpiredAt time.Time `json:"expired_at" gorm:"column:expired_at"`
+	"github.com/hmrkm/simple-auth/domain"
+
+	"github.com/pkg/errors"
+)
+
+//go:generate mockgen -source=$GOFILE -self_package=github.com/hmrkm/simple-auth/$GOPACKAGE -package=$GOPACKAGE -destination=token_mock.go
+type TokenUsecase interface {
+	Verify(token string, now time.Time) (domain.User, error)
 }
 
-func (Token) TableName() string {
-	return "tokens"
+type tokenUsecase struct {
+	store domain.Store
 }
 
-func (t Token) IsValid(now time.Time) bool {
-	return !t.ExpiredAt.Before(now)
+func NewTokenUsecase(s domain.Store) TokenUsecase {
+	return tokenUsecase{
+		store: s,
+	}
 }
 
-func (t Token) GetEpochExpiredAt() int {
-	return int(t.ExpiredAt.UnixNano() / 1000)
+func (ta tokenUsecase) Verify(token string, now time.Time) (domain.User, error) {
+	t := domain.Token{}
+	if err := ta.store.First(&t, "token=?", token); err != nil {
+		if ta.store.IsNotFoundError(err) {
+			return domain.User{}, errors.WithStack(domain.ErrNotFound)
+		}
+		return domain.User{}, errors.WithStack(err)
+	}
+
+	if !t.IsValid(now) {
+		return domain.User{}, errors.WithStack(domain.ErrTokenWasExpired)
+	}
+
+	u := domain.User{}
+	if err := ta.store.First(&u, "id=?", t.UserId); err != nil {
+		return domain.User{}, errors.WithStack(err)
+	}
+
+	return u, nil
 }

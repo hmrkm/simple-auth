@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/hmrkm/simple-auth/usecase"
+	"github.com/hmrkm/simple-auth/domain"
 
 	"gorm.io/gorm"
 )
@@ -35,7 +35,7 @@ func (m Mysql) Find(dest interface{}, conds string, params ...interface{}) error
 func (m Mysql) First(dest interface{}, conds string, params ...interface{}) error {
 	err := m.Conn.First(dest, conds, params).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return usecase.ErrNotFound
+		return domain.ErrNotFound
 	}
 
 	return err

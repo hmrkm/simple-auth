@@ -9,7 +9,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	gomock "github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
-	"github.com/hmrkm/simple-auth/usecase"
+	"github.com/hmrkm/simple-auth/domain"
 	"gorm.io/gorm"
 )
 
@@ -168,7 +168,7 @@ func TestFirst(t *testing.T) {
 			"aaa",
 			gorm.ErrRecordNotFound,
 			MockTable{},
-			usecase.ErrNotFound,
+			domain.ErrNotFound,
 		},
 	}
 

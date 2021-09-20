@@ -6,36 +6,51 @@ import (
 	"github.com/hmrkm/simple-auth/usecase"
 )
 
-//go:generate mockgen -source=$GOFILE -self_package=github.com/hmrkm/simple-auth/$GOPACKAGE -package=$GOPACKAGE -destination=auth_mock.go
 type AuthAdapter interface {
-	Verify(RequestAuth, time.Time, int) (ResponseAuth, error)
+	Auth(RequestAuth) (ResponseAuth, error)
+	Verify(RequestVerify) (ResponseVerify, error)
 }
 
 type authAdapter struct {
-	userService  usecase.UserService
-	tokenService usecase.TokenService
+	AuthUsecase     usecase.AuthUsecase
+	TokenUsecase    usecase.TokenUsecase
+	TokenExpireHour int
 }
 
-func NewAuthAdapter(us usecase.UserService, ts usecase.TokenService) AuthAdapter {
+func NewAuthAdapter(
+	au usecase.AuthUsecase,
+	tu usecase.TokenUsecase,
+	teh int,
+) AuthAdapter {
 	return authAdapter{
-		userService:  us,
-		tokenService: ts,
+		AuthUsecase:     au,
+		TokenUsecase:    tu,
+		TokenExpireHour: teh,
 	}
 }
 
-func (a authAdapter) Verify(req RequestAuth, now time.Time, tokenExpireHour int) (ResponseAuth, error) {
-	user, err := a.userService.Verify(req.Email, req.Password)
-	if err != nil {
-		return ResponseAuth{}, err
-	}
-
-	token, err := a.tokenService.Create(user, now, tokenExpireHour)
+func (aa authAdapter) Auth(req RequestAuth) (ResponseAuth, error) {
+	t, err := aa.AuthUsecase.Verify(req.Email, req.Password, time.Now(), aa.TokenExpireHour)
 	if err != nil {
 		return ResponseAuth{}, err
 	}
 
 	return ResponseAuth{
-		Token:     token.Token,
-		ExpiredAt: token.GetEpochExpiredAt(),
+		ExpiredAt: t.GetEpochExpiredAt(),
+		Token:     t.Token,
+	}, nil
+}
+
+func (aa authAdapter) Verify(req RequestVerify) (ResponseVerify, error) {
+	u, err := aa.TokenUsecase.Verify(req.Token, time.Now())
+	if err != nil {
+		return ResponseVerify{}, err
+	}
+
+	return ResponseVerify{
+		User: VerifyUser{
+			Email: u.Email,
+			Id:    u.Id,
+		},
 	}, nil
 }

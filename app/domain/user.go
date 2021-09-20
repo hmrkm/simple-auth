@@ -1,9 +1,9 @@
-package usecase
+package domain
 
 type User struct {
 	Id       string `json:"id" gorm:"column:id"`
 	Email    string `json:"email" gorm:"column:email"`
-	Password string `json:"password" gorm:"column:password"`
+	Password string `json:"-" gorm:"column:password"`
 }
 
 func (User) TableName() string {

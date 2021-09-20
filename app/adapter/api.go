@@ -53,4 +53,3 @@ type PostV1AuthJSONRequestBody PostV1AuthJSONBody
 
 // PostV1VerifyJSONRequestBody defines body for PostV1Verify for application/json ContentType.
 type PostV1VerifyJSONRequestBody PostV1VerifyJSONBody
-

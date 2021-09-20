@@ -1,20 +1,20 @@
-package adapter
+package usecase
 
 import (
 	"errors"
 	"testing"
 	"time"
 
-	"github.com/hmrkm/simple-auth/usecase"
+	"github.com/hmrkm/simple-auth/domain"
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/go-cmp/cmp"
 )
 
 func TestVerifyAuth(t *testing.T) {
-	hashedPasswd := usecase.CreateHash("passwd")
+	hashedPasswd := domain.CreateHash("passwd")
 	now := time.Now()
-	user := usecase.User{
+	user := domain.User{
 		Id:       "a",
 		Email:    "aaa@example.com",
 		Password: hashedPasswd,
@@ -22,89 +22,83 @@ func TestVerifyAuth(t *testing.T) {
 	createErr := errors.New("create error")
 	testCases := []struct {
 		name            string
-		req             RequestAuth
+		email           string
+		password        string
 		now             time.Time
 		tokenExpireHour int
 		isValid         bool
-		user            usecase.User
+		user            domain.User
 		verifyErr       error
-		token           usecase.Token
+		token           domain.Token
 		CreateErr       error
-		expected        ResponseAuth
+		expected        domain.Token
 		expectedErr     error
 	}{
 		{
 			"正常ケース",
-			RequestAuth{
-				Email:    "aaa@example.com",
-				Password: "passwd",
-			},
+			"aaa@example.com",
+			"passwd",
 			now,
 			1,
 			true,
 			user,
 			nil,
-			usecase.Token{
+			domain.Token{
 				Token:     "token",
 				UserId:    "a",
 				ExpiredAt: now.Add(1 * time.Hour),
 			},
 			nil,
-			ResponseAuth{
+			domain.Token{
 				Token:     "token",
-				ExpiredAt: int(now.Add(1*time.Hour).UnixNano() / 1000),
+				UserId:    "a",
+				ExpiredAt: now.Add(1 * time.Hour),
 			},
 			nil,
 		},
 		{
 			"ユーザー認証異常ケース1",
-			RequestAuth{
-				Email:    "aaa@example.com",
-				Password: "passwd",
-			},
+			"aaa@example.com",
+			"passwd",
 			now,
 			1,
 			true,
-			usecase.User{},
-			usecase.ErrInvalidPassword,
-			usecase.Token{},
+			domain.User{},
+			domain.ErrInvalidPassword,
+			domain.Token{},
 			nil,
-			ResponseAuth{},
-			usecase.ErrInvalidPassword,
+			domain.Token{},
+			domain.ErrInvalidPassword,
 		},
 		{
 			"ユーザー認証異常ケース2",
-			RequestAuth{
-				Email:    "aaa@example.com",
-				Password: "passwd",
-			},
+			"aaa@example.com",
+			"passwd",
 			now,
 			1,
 			false,
-			usecase.User{},
-			usecase.ErrInvalidVerify,
-			usecase.Token{},
+			domain.User{},
+			domain.ErrInvalidVerify,
+			domain.Token{},
 			nil,
-			ResponseAuth{},
-			usecase.ErrInvalidVerify,
+			domain.Token{},
+			domain.ErrInvalidVerify,
 		},
 		{
 			"トークン作成失敗の異常ケース",
-			RequestAuth{
-				Email:    "aaa@example.com",
-				Password: "passwd",
-			},
+			"aaa@example.com",
+			"passwd",
 			now,
 			1,
 			true,
-			usecase.User{
+			domain.User{
 				Email:    "aaa@example.com",
 				Password: hashedPasswd,
 			},
 			nil,
-			usecase.Token{},
+			domain.Token{},
 			createErr,
-			ResponseAuth{},
+			domain.Token{},
 			createErr,
 		},
 	}
@@ -114,19 +108,19 @@ func TestVerifyAuth(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
-			usm := usecase.NewMockUserService(ctrl)
+			usm := domain.NewMockUserService(ctrl)
 			usm.EXPECT().Verify(gomock.Any(), gomock.Any()).Return(tc.user, tc.verifyErr)
-			tsm := usecase.NewMockTokenService(ctrl)
+			tsm := domain.NewMockTokenService(ctrl)
 			if tc.verifyErr == nil {
 				tsm.EXPECT().Create(gomock.Any(), gomock.Any(), gomock.Any()).Return(tc.token, tc.CreateErr)
 			}
 
-			ta := NewAuthAdapter(usm, tsm)
+			ta := NewAuthUsecase(usm, tsm)
 
-			actual, actualErr := ta.Verify(tc.req, tc.now, tc.tokenExpireHour)
+			actual, actualErr := ta.Verify(tc.email, tc.password, tc.now, tc.tokenExpireHour)
 
 			if diff := cmp.Diff(tc.expected, actual); diff != "" {
-				t.Errorf("Verify() isValid is missmatch :%s", diff)
+				t.Errorf("Verify() domain.Token is missmatch :%s", diff)
 			}
 			if !errors.Is(actualErr, tc.expectedErr) {
 				t.Errorf("Verify() actualErr: %v, ecpectedErr: %v", actualErr, tc.expectedErr)
