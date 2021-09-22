@@ -1,25 +1,25 @@
 version: "3"
 
 volumes:
-    mysql-volume:
-    golang-volume:
+  mysql-volume:
+  golang-volume:
 
 services:
-    golang:
-        build: app
-        ports:
-            - 80:80
-        volumes:
-            - ./app:/workspace
-            - golang-volume:/go
-        working_dir: /workspace
-        env_file:
-            - ./.env
-    mysql:
-        image: mysql:5.7
-        ports:
-            - 3306:3306
-        volumes:
-            - mysql-volume:/var/lib/mysql
-        env_file:
-            - ./.env
+  golang:
+    build: app
+    ports:
+      - 80:80
+    volumes:
+      - ./app:/workspace
+      - golang-volume:/go
+    working_dir: /workspace
+    env_file:
+      - ./.env
+  mysql:
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-volume:/var/lib/mysql
+    env_file:
+      - ./.env
