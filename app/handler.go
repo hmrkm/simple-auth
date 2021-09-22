@@ -9,12 +9,12 @@ import (
 
 func ErrorHandler(c echo.Context, err error) (json error) {
 
-	if errors.Is(domain.ErrNotFound, err) ||
-		errors.Is(err, domain.ErrTokenWasExpired) {
+	if errors.As(domain.ErrNotFound, &err) ||
+		errors.As(domain.ErrTokenWasExpired, &err) {
 		return c.JSON(404, nil)
 	}
 
-	if errors.Is(domain.ErrInvalidVerify, err) {
+	if errors.As(domain.ErrInvalidVerify, &err) {
 		return c.JSON(401, nil)
 	}
 
