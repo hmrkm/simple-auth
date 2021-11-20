@@ -41,7 +41,7 @@ CREATE TABLE `tokens` (
 --
 
 CREATE TABLE `users` (
-  `id` varchar(255) NOT NULL COMMENT '主キー',
+  `id` varchar(16) NOT NULL COMMENT '主キー',
   `email` varchar(255) NOT NULL COMMENT 'メールアドレス',
   `password` varchar(255) NOT NULL COMMENT 'ハッシュ化されたパスワード',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時'
