@@ -50,7 +50,3 @@ func (m Mysql) First(destAddr interface{}, cond string, params ...interface{}) e
 func (m Mysql) Create(value interface{}) error {
 	return m.conn.Create(value).Error
 }
-
-func (m Mysql) IsNotFoundError(err error) bool {
-	return errors.Is(gorm.ErrRecordNotFound, err)
-}

@@ -242,30 +242,3 @@ func TestCreate(t *testing.T) {
 		})
 	}
 }
-
-func TestIsNotFoundError(t *testing.T) {
-	testCases := []struct {
-		name     string
-		err      error
-		expected bool
-	}{
-		{
-
-			"正常ケース",
-			gorm.ErrRecordNotFound,
-			true,
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			mysql, _ := NewMysqlMock()
-
-			actual := mysql.IsNotFoundError(tc.err)
-
-			if diff := cmp.Diff(tc.expected, actual); diff != "" {
-				t.Errorf("IsNotFoundError() value is missmatch :%s", diff)
-			}
-		})
-	}
-}
