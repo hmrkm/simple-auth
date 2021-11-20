@@ -30,7 +30,7 @@ func (ts tokenService) Create(u User, now time.Time, expireHour int) (Token, err
 	}
 
 	if err := ts.store.Create(&token); err != nil {
-		return Token{}, errors.WithStack(err)
+		return Token{}, err
 	}
 
 	return token, nil
