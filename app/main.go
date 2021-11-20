@@ -53,8 +53,8 @@ func main() {
 
 		res, err := aa.Auth(req)
 
-		if jsn := ErrorHandler(c, err); jsn != nil {
-			return jsn
+		if err != nil {
+			return ErrorHandler(c, err)
 		}
 
 		return c.JSON(200, res)
@@ -68,8 +68,8 @@ func main() {
 
 		res, err := aa.Verify(req)
 
-		if jsn := ErrorHandler(c, err); jsn != nil {
-			return jsn
+		if err != nil {
+			return ErrorHandler(c, err)
 		}
 
 		return c.JSON(200, res)
