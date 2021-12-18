@@ -2,8 +2,6 @@ package domain
 
 import (
 	"time"
-
-	"github.com/pkg/errors"
 )
 
 //go:generate mockgen -source=$GOFILE -self_package=github.com/hmrkm/simple-auth/$GOPACKAGE -package=$GOPACKAGE -destination=token_service_mock.go
