@@ -1,14 +1,11 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/hmrkm/simple-auth/domain"
 	"github.com/labstack/echo/v4"
 )
 
 func ErrorHandler(c echo.Context, err error) (json error) {
-	fmt.Println(err.Error())
 	switch err {
 	case domain.ErrNotFound, domain.ErrTokenWasExpired:
 		return c.JSON(404, nil)
