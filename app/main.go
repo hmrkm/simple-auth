@@ -1,13 +1,11 @@
 package main
 
 import (
-	"os"
-	"strconv"
-
 	"github.com/hmrkm/simple-auth/adapter"
 	"github.com/hmrkm/simple-auth/domain"
 	"github.com/hmrkm/simple-auth/io"
 	"github.com/hmrkm/simple-auth/usecase"
+	"github.com/kelseyhightower/envconfig"
 	mysqlDriver "gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -16,16 +14,16 @@ import (
 )
 
 func main() {
-
-	mysqlUser := os.Getenv("MYSQL_USER")
-	mysqlPassword := os.Getenv("MYSQL_PASSWORD")
-	mysqlDatabase := os.Getenv("MYSQL_DATABASE")
-	tokenExpireHour, err := strconv.Atoi(os.Getenv("TOKEN_EXPIRE_HOUR"))
-	if err != nil {
+	config := Config{}
+	if err := envconfig.Process("", &config); err != nil {
 		panic(err)
 	}
 
-	db, err := gorm.Open(mysqlDriver.Open(io.CreateDSN(mysqlUser, mysqlPassword, mysqlDatabase)), &gorm.Config{
+	db, err := gorm.Open(mysqlDriver.Open(io.CreateDSN(
+		config.MysqlUser,
+		config.MysqlPassword,
+		config.MysqlDatabase,
+	)), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	if err != nil {
@@ -39,7 +37,7 @@ func main() {
 	tsd := domain.NewTokenService(mysql)
 	au := usecase.NewAuth(usd, tsd)
 	tu := usecase.NewToken(mysql)
-	aa := adapter.NewAuth(au, tu, tokenExpireHour)
+	aa := adapter.NewAuth(au, tu, config.TokenExpireHour)
 
 	e := echo.New()
 	Route(e, aa)

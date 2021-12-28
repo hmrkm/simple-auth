@@ -12,6 +12,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/golangci/golangci-lint v1.41.1 // indirect
 	github.com/google/go-cmp v0.5.6
+	github.com/kelseyhightower/envconfig v1.4.0 // indirect
 	github.com/labstack/echo/v4 v4.6.0
 	github.com/pelletier/go-toml v1.9.3 // indirect
 	github.com/pkg/errors v0.9.1
