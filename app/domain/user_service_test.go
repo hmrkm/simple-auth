@@ -90,13 +90,6 @@ func TestVerify(t *testing.T) {
 					return tc.dbErr
 				},
 			)
-			if tc.dbErr != nil {
-				sm.EXPECT().IsNotFoundError(tc.dbErr).DoAndReturn(
-					func(err error) bool {
-						return errors.Is(ErrNotFound, err)
-					},
-				)
-			}
 			us := NewUserService(sm)
 
 			actualUser, actualErr := us.Verify(tc.email, tc.password)

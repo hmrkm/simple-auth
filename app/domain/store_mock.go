@@ -84,17 +84,3 @@ func (mr *MockStoreMockRecorder) First(destAddr, cond interface{}, params ...int
 	varargs := append([]interface{}{destAddr, cond}, params...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "First", reflect.TypeOf((*MockStore)(nil).First), varargs...)
 }
-
-// IsNotFoundError mocks base method.
-func (m *MockStore) IsNotFoundError(arg0 error) bool {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IsNotFoundError", arg0)
-	ret0, _ := ret[0].(bool)
-	return ret0
-}
-
-// IsNotFoundError indicates an expected call of IsNotFoundError.
-func (mr *MockStoreMockRecorder) IsNotFoundError(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsNotFoundError", reflect.TypeOf((*MockStore)(nil).IsNotFoundError), arg0)
-}

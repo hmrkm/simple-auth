@@ -118,13 +118,7 @@ func TestVerifyToken(t *testing.T) {
 					return tc.dbErr
 				},
 			)
-			if tc.dbErr != nil {
-				sm.EXPECT().IsNotFoundError(tc.dbErr).DoAndReturn(
-					func(err error) bool {
-						return errors.Is(domain.ErrNotFound, err)
-					},
-				)
-			} else {
+			if tc.dbErr == nil {
 				if !tc.dbExpiredAt.Before(tc.now) {
 					sm.EXPECT().First(gomock.Any(), "id=?", tc.dbUserId).DoAndReturn(
 						func(dest *domain.User, cond string, param string) error {

@@ -71,7 +71,7 @@ func TestClose(t *testing.T) {
 				ctrl := gomock.NewController(t)
 				defer ctrl.Finish()
 
-				mdbc := NewMockDBConn(ctrl)
+				mdbc := NewMockGormConn(ctrl)
 				mdbc.EXPECT().DB().Return(&sql.DB{}, tc.err)
 				mysql.conn = mdbc
 			}

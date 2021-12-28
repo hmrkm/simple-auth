@@ -12,31 +12,31 @@ import (
 	gorm "gorm.io/gorm"
 )
 
-// MockDBConn is a mock of DBConn interface.
-type MockDBConn struct {
+// MockGormConn is a mock of GormConn interface.
+type MockGormConn struct {
 	ctrl     *gomock.Controller
-	recorder *MockDBConnMockRecorder
+	recorder *MockGormConnMockRecorder
 }
 
-// MockDBConnMockRecorder is the mock recorder for MockDBConn.
-type MockDBConnMockRecorder struct {
-	mock *MockDBConn
+// MockGormConnMockRecorder is the mock recorder for MockGormConn.
+type MockGormConnMockRecorder struct {
+	mock *MockGormConn
 }
 
-// NewMockDBConn creates a new mock instance.
-func NewMockDBConn(ctrl *gomock.Controller) *MockDBConn {
-	mock := &MockDBConn{ctrl: ctrl}
-	mock.recorder = &MockDBConnMockRecorder{mock}
+// NewMockGormConn creates a new mock instance.
+func NewMockGormConn(ctrl *gomock.Controller) *MockGormConn {
+	mock := &MockGormConn{ctrl: ctrl}
+	mock.recorder = &MockGormConnMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockDBConn) EXPECT() *MockDBConnMockRecorder {
+func (m *MockGormConn) EXPECT() *MockGormConnMockRecorder {
 	return m.recorder
 }
 
 // Create mocks base method.
-func (m *MockDBConn) Create(value interface{}) *gorm.DB {
+func (m *MockGormConn) Create(value interface{}) *gorm.DB {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", value)
 	ret0, _ := ret[0].(*gorm.DB)
@@ -44,13 +44,13 @@ func (m *MockDBConn) Create(value interface{}) *gorm.DB {
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockDBConnMockRecorder) Create(value interface{}) *gomock.Call {
+func (mr *MockGormConnMockRecorder) Create(value interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockDBConn)(nil).Create), value)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockGormConn)(nil).Create), value)
 }
 
 // DB mocks base method.
-func (m *MockDBConn) DB() (*sql.DB, error) {
+func (m *MockGormConn) DB() (*sql.DB, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DB")
 	ret0, _ := ret[0].(*sql.DB)
@@ -59,15 +59,15 @@ func (m *MockDBConn) DB() (*sql.DB, error) {
 }
 
 // DB indicates an expected call of DB.
-func (mr *MockDBConnMockRecorder) DB() *gomock.Call {
+func (mr *MockGormConnMockRecorder) DB() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DB", reflect.TypeOf((*MockDBConn)(nil).DB))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DB", reflect.TypeOf((*MockGormConn)(nil).DB))
 }
 
 // Find mocks base method.
-func (m *MockDBConn) Find(dest interface{}, conds ...interface{}) *gorm.DB {
+func (m *MockGormConn) Find(destAddr interface{}, conds ...interface{}) *gorm.DB {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{dest}
+	varargs := []interface{}{destAddr}
 	for _, a := range conds {
 		varargs = append(varargs, a)
 	}
@@ -77,16 +77,16 @@ func (m *MockDBConn) Find(dest interface{}, conds ...interface{}) *gorm.DB {
 }
 
 // Find indicates an expected call of Find.
-func (mr *MockDBConnMockRecorder) Find(dest interface{}, conds ...interface{}) *gomock.Call {
+func (mr *MockGormConnMockRecorder) Find(destAddr interface{}, conds ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{dest}, conds...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockDBConn)(nil).Find), varargs...)
+	varargs := append([]interface{}{destAddr}, conds...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockGormConn)(nil).Find), varargs...)
 }
 
 // First mocks base method.
-func (m *MockDBConn) First(dest interface{}, conds ...interface{}) *gorm.DB {
+func (m *MockGormConn) First(destAddr interface{}, conds ...interface{}) *gorm.DB {
 	m.ctrl.T.Helper()
-	varargs := []interface{}{dest}
+	varargs := []interface{}{destAddr}
 	for _, a := range conds {
 		varargs = append(varargs, a)
 	}
@@ -96,8 +96,8 @@ func (m *MockDBConn) First(dest interface{}, conds ...interface{}) *gorm.DB {
 }
 
 // First indicates an expected call of First.
-func (mr *MockDBConnMockRecorder) First(dest interface{}, conds ...interface{}) *gomock.Call {
+func (mr *MockGormConnMockRecorder) First(destAddr interface{}, conds ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{dest}, conds...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "First", reflect.TypeOf((*MockDBConn)(nil).First), varargs...)
+	varargs := append([]interface{}{destAddr}, conds...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "First", reflect.TypeOf((*MockGormConn)(nil).First), varargs...)
 }
