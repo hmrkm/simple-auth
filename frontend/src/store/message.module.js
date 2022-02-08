@@ -14,7 +14,7 @@ const mutations = {
 
         setTimeout(() => {
             state.content = '';
-            state.clss = '';    
+            state.clss = '';
         }, timeout)
     }
 }

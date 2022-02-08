@@ -7,7 +7,7 @@ const state = {
 const actions = {
     login({commit}, { email, password }) {
         commit('loginRequest', { email });
-    
+
         return loginService.login(email, password).then(result =>{
             return result.success;
         });
