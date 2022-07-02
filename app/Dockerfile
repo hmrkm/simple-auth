@@ -1,4 +1,4 @@
-FROM golang:1.16
+FROM golang
 
 WORKDIR /workspace
 
@@ -14,4 +14,4 @@ RUN go get github.com/golang/mock/mockgen && \
 RUN go get -u github.com/cosmtrek/air && \
     go build -o /go/bin/air github.com/cosmtrek/air
 
-CMD ["air", "-c", ".air.toml"]
+ENTRYPOINT ["air", "-c", ".air.toml"]

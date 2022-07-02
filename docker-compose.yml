@@ -16,23 +16,33 @@ services:
     working_dir: /workspace
     env_file:
       - ./.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+
   frontend:
     build: frontend
     ports:
-      - 8000:8000
-      - 8080:8080
+      - 3000:3000
     volumes:
       - ./frontend:/workspace
       - frontend-node_modules:/workspace/node_modules
     env_file:
       - ./.env
     environment:
+      - WATCHPACK_POLLING=true
       - CHOKIDAR_USEPOLLING=true
   mysql:
-    image: mysql:5.7
+    image: mysql
     ports:
       - 3306:3306
     volumes:
       - mysql-volume:/var/lib/mysql
+      - ./app/docs/initdb:/docker-entrypoint-initdb.d
     env_file:
       - ./.env
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping"]
+      interval: 5s
+      timeout: 1s
+      retries: 3
