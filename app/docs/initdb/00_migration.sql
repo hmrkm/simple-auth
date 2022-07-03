@@ -31,7 +31,8 @@ CREATE TABLE `tokens` (
   `token` varchar(255) NOT NULL COMMENT 'トークン',
   `user_id` varchar(255) NOT NULL COMMENT 'users.id',
   `expired_at` timestamp NULL DEFAULT NULL COMMENT '有効期限',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時'
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '作成日時',
+  KEY `token` (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

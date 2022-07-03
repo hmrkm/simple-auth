@@ -1,48 +1,69 @@
 version: "3"
 
 volumes:
-  mysql-volume:
-  golang-volume:
-  frontend-node_modules:
+    mysql-volume:
+    golang-volume:
+    frontend-node_modules:
 
 services:
-  golang:
-    build: app
-    ports:
-      - 80:80
-    volumes:
-      - ./app:/workspace
-      - golang-volume:/go
-    working_dir: /workspace
-    env_file:
-      - ./.env
-    depends_on:
-      mysql:
-        condition: service_healthy
+    golang:
+        build: app
+        ports:
+            - 80:80
+        volumes:
+            - ./app:/workspace
+            - golang-volume:/go
+        working_dir: /workspace
+        env_file:
+            - ./.env
+        depends_on:
+            mysql:
+                condition: service_healthy
 
-  frontend:
-    build: frontend
-    ports:
-      - 3000:3000
-    volumes:
-      - ./frontend:/workspace
-      - frontend-node_modules:/workspace/node_modules
-    env_file:
-      - ./.env
-    environment:
-      - WATCHPACK_POLLING=true
-      - CHOKIDAR_USEPOLLING=true
-  mysql:
-    image: mysql
-    ports:
-      - 3306:3306
-    volumes:
-      - mysql-volume:/var/lib/mysql
-      - ./app/docs/initdb:/docker-entrypoint-initdb.d
-    env_file:
-      - ./.env
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping"]
-      interval: 5s
-      timeout: 1s
-      retries: 3
+    frontend:
+        build: frontend
+        ports:
+            - 3000:3000
+        volumes:
+            - ./frontend:/workspace
+            - frontend-node_modules:/workspace/node_modules
+        env_file:
+            - ./.env
+        environment:
+            - WATCHPACK_POLLING=true
+            - CHOKIDAR_USEPOLLING=true
+    mysql:
+        build: db
+        ports:
+            - 3306:3306
+        volumes:
+            - mysql-volume:/var/lib/mysql
+            - ./app/docs/initdb:/docker-entrypoint-initdb.d
+        env_file:
+            - ./.env
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping"]
+            interval: 5s
+            timeout: 1s
+            retries: 3
+    stresstest-master:
+        image: locustio/locust
+        ports:
+            - "8089:8089"
+        volumes:
+            - ./stresstest:/mnt/locust
+        command: -f /mnt/locust/locustfile.py --master -H http://master:8089
+        profiles:
+            - stresstest
+        depends_on:
+            - golang
+
+    stresstest-worker:
+        image: locustio/locust
+        volumes:
+            - ./stresstest:/mnt/locust
+        command: -f /mnt/locust/locustfile.py --worker --master-host stresstest-master
+        profiles:
+            - stresstest
+        depends_on:
+            - golang

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/hmrkm/simple-auth/adapter"
 	"github.com/hmrkm/simple-auth/domain"
 	"github.com/hmrkm/simple-auth/io"
@@ -8,7 +10,6 @@ import (
 	"github.com/kelseyhightower/envconfig"
 	mysqlDriver "gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 
 	"github.com/labstack/echo/v4"
 )
@@ -23,12 +24,18 @@ func main() {
 		config.MysqlUser,
 		config.MysqlPassword,
 		config.MysqlDatabase,
-	)), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
-	})
+	)))
 	if err != nil {
 		panic(err)
 	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
+	sqlDB.SetMaxIdleConns(config.MysqlMaxIdelConns)
+	sqlDB.SetMaxOpenConns(config.MysqlMaxOpenConns)
+	sqlDB.SetConnMaxLifetime(time.Minute)
 
 	mysql := io.NewMysql(db)
 	defer mysql.Close()
